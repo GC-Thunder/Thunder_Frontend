@@ -1,0 +1,1 @@
+// simple page component (will have several components at once )
