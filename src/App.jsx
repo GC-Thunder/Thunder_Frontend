@@ -1,15 +1,20 @@
 import { useState } from 'react'
 import "./index.css";
 
-function App() {
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import ChatArea from './components/chatarea';
+// import "./index.css";
 
+function App() {
   return (
-    <>
-    <h1
-    className="text-5xl font-bold "
-    >Hello World</h1>
-    </>
-  )
+    <Router>
+      <Routes>
+        {/* <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} /> */}
+        <Route path='/' element={<ChatArea/>}/>
+      </Routes>
+    </Router>
+  );
 }
 
-export default App
+export default App;
