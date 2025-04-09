@@ -1,9 +1,10 @@
-import { useState } from 'react'
+
 import "./index.css";
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import ChatArea from './components/chatarea';
-// import "./index.css";
+// import ChatArea from './components/chatarea';
+import Home from './pages/home';
+
 
 function App() {
   return (
@@ -11,7 +12,7 @@ function App() {
       <Routes>
         {/* <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} /> */}
-        <Route path='/' element={<ChatArea/>}/>
+        <Route path='/' element={<Home/>}/>
       </Routes>
     </Router>
   );
