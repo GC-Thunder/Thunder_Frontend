@@ -2,7 +2,7 @@ import React from "react";
 
 const ChatMessage = ({ message, isUser }) => {
   return (
-    <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-4`}>
+    <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-4 transition-all duration-300`}>
       <div 
         className={`max-w-3/4 p-3 rounded-lg ${
           isUser 

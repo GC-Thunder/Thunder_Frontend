@@ -1,56 +1,54 @@
 // ToggleMenu.js
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState,useEffect } from "react";
+import axios from "axios";
 
 // Create the context
 const ToggleMenu = createContext();
 const CurrentChatMapContext = createContext();
-const dummyChatMap = new Map([
-  [
-    'chat-1',
-    [
-      {
-        isUser: true,
-        content: "Hey, what's the weather like today?",
-        timestamp: Date.now() - 100000,
-      },
-      {
-        isUser: false,
-        content: "Today is sunny with a high of 25°C. 😎",
-        timestamp: Date.now() - 95000,
-      },
-    ],
-  ],
-  [
-    'chat-2',
-    [
-      {
-        isUser: true,
-        content: "Can you help me write a poem?",
-        timestamp: Date.now() - 50000,
-      },
-      {
-        isUser: false,
-        content: "Of course! Roses are red, violets are blue...",
-        timestamp: Date.now() - 48000,
-      },
-      {
-        isUser: true,
-        content: "Nice! Make it about the moon.",
-        timestamp: Date.now() - 47000,
-      },
-    ],
-  ],
-]);
+
+
+const API_URL = 'http://localhost:5000/api';
 
 
 // Create a provider component
 export const ToggleMenuProvider = ({ children }) => {
-  const [chatArray, setChatArray] = useState(dummyChatMap);
-  const [currentChatMap, setCurrentChatMap] = useState([]);
+  
+  const [chats,setChats] = useState([]);
+  const [currentChatIndex,setCurrentChatIndex] = useState(0);
+
+  const [loading,setLoading] = useState(true);
+  const [error,setError] = useState(null);
+
+  // making a dummpy userId (would use session management for it later )
+  const userId=  "user123"
+
+  useEffect(()=>{
+    const fetchChats = async () =>{
+      try {
+        setLoading(true)
+        const response = await axios.get(`${API_URL}/chats?userId=${userId}`);
+
+        if (response.data.success) {
+          setChats(response.data.data);
+        }
+        else {
+          throw new Error(response.data.message || 'Failed to fetch chats')
+        }
+      } catch (err){
+        setError(err.message);
+        console.error('Error fetching chats:',err)
+        // initialize the chats with empty array on failure of fetch request 
+        setChats([])
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchChats();
+  }, [userId]);
 
   return (
-    <CurrentChatMapContext.Provider value={{currentChatMap, setCurrentChatMap}} >
-      <ToggleMenu.Provider value={{ chatArray, setChatArray }}>
+    <CurrentChatMapContext.Provider value={{currentChatIndex,setCurrentChatIndex}} >
+      <ToggleMenu.Provider value={{ chats,setChats,loading,error }}>
         {children}
       </ToggleMenu.Provider>
     </CurrentChatMapContext.Provider>
