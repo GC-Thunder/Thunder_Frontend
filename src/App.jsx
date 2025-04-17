@@ -1,19 +1,20 @@
-
-import "./index.css";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-// import ChatArea from './components/chatarea';
+// src/App.jsx
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { ToggleMenuProvider } from './Context/context';
 import Home from './pages/home';
-
 
 function App() {
   return (
+    <ToggleMenuProvider>
       <Router>
-      <Routes>
-        {/* <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} /> */}
-        <Route path='/' element={<Home/>}/>
-      </Routes>
-    </Router>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/chat/:chatId" element={<Home />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </Router>
+    </ToggleMenuProvider>
   );
 }
 

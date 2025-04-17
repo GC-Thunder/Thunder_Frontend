@@ -1,54 +1,56 @@
 import { useState } from 'react'
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
 import plus from '../assets/plus.svg'
 import clock from '../assets/clock.svg'
 import star from '../assets/star.svg' 
 import axios from 'axios'
 import { useToggleMenu } from '../Context/context'
-import { useCurrentChatMap } from '../Context/context'
 
 const API_URL = 'http://localhost:5000/api';
 
-const ChatSideBar = ({ createNewChat,isMobileSidebarOpen }) => {
-
-  
+const ChatSideBar = ({ createNewChat, isMobileSidebarOpen }) => {
   const { chats, setChats } = useToggleMenu();
-  const { currentChatIndex, setCurrentChatIndex } = useCurrentChatMap();
+  const navigate = useNavigate();
   
-  const deleteChat = async (chatId, index, e) => {
+  const deleteChat = async (chatId, e) => {
     e.stopPropagation(); // Prevent triggering the chat selection
     
     try {
       await axios.delete(`${API_URL}/chats/${chatId}`);
       
       // Update local state
-      setChats(prevChats => prevChats.filter((_, i) => i !== index));
+      const updatedChats = chats.filter(chat => chat.id !== chatId);
+      setChats(updatedChats);
       
-      // If we deleted the current chat, select another one
-      if (currentChatIndex === index) {
-        setCurrentChatIndex(Math.max(0, index - 1));
-      } else if (currentChatIndex > index) {
-        // If we deleted a chat before the current one, adjust the index
-        setCurrentChatIndex(currentChatIndex - 1);
+      // If we deleted the chat we were viewing, navigate to another chat
+      if (updatedChats.length > 0) {
+        navigate(`/chat/${updatedChats[0].id}`);
+      } else {
+        // If no chats left, navigate to home
+        navigate('/');
       }
     } catch (error) {
       console.error("Error deleting chat:", error);
     }
   };
 
+  const selectChat = (chatId) => {
+    navigate(`/chat/${chatId}`);
+  };
  
   return (
-    <div className="wrapper h-screen  absolute w-[70vw] md:w-[24vw] "style={{
+    <div className="wrapper h-[100vh]  absolute w-[70vw] md:w-[24vw]" style={{
       left: isMobileSidebarOpen ? '-700px' : '0px',
       transition: 'left 0.3s ease',
-      zIndex:55
+      zIndex: 55
     }}>
       <div className="rightMenu h-full w-full bg-white shadow-lg relative">
         <div className="absolute top-0 right-[-5px] h-full w-1 bg-white" style={{
           boxShadow: "2px 0px 8px 0px rgba(0,0,0,0.3)",
           zIndex: 10
         }}></div>
-        <div className="py-10 innerWrapepr flex flex-col items-center gap-10 justify-between h-full bg-gradient-to-b from-gray-100 to-gray-200">
+        <div className="py-10 innerWrapepr overflow-y-scroll flex flex-col items-center gap-10 justify-between h-full bg-gradient-to-b from-gray-100 to-gray-200">
           <div className="iconContainer relative">
             <div className="activeTab h-7 w-1 bg-blue-600 rounded-3xl absolute left-[-12px] transition-all duration-300 ease-in-out" style={{
               top: `4px`
@@ -74,15 +76,15 @@ const ChatSideBar = ({ createNewChat,isMobileSidebarOpen }) => {
             </div>
             <ul className='inline-flex items-center flex-col justify-center w-full rounded-lg overflow-hidden shadow-md'>
               {chats.length > 0 ? (
-                chats.map((chat, index) => (
+                chats.map((chat) => (
                   <li 
-                    onClick={() => setCurrentChatIndex(index)} 
-                    className={`py-4 px-6 w-full border-b border-blue-100 cursor-pointer h-16 overflow-x-hidden hover:bg-blue-50 transition-all duration-200 text-gray-700 font-medium flex justify-between items-center ${currentChatIndex === index ? 'bg-blue-100' : ''}`} 
-                    key={index}
+                    onClick={() => selectChat(chat.id)} 
+                    className={`py-4 px-6 w-full border-b border-blue-100 cursor-pointer h-16 overflow-x-hidden hover:bg-blue-50 transition-all duration-200 text-gray-700 font-medium flex justify-between items-center ${window.location.pathname === `/chat/${chat.id}` ? 'bg-blue-100' : ''}`} 
+                    key={chat.id}
                   >
                     <span>{chat.title}</span>
                     <button 
-                      onClick={(e) => deleteChat(chat._id, index, e)} 
+                      onClick={(e) => deleteChat(chat.id, e)} 
                       className="text-red-500 hover:text-red-700"
                     >
                       ✕
