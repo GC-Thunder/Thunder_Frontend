@@ -1,21 +1,19 @@
-// src/App.jsx
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import { ToggleMenuProvider } from './Context/context';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { ChatProvider } from './context/chatContext';
 import Home from './pages/home';
 
-function App() {
+const App = () => {
   return (
-    <ToggleMenuProvider>
-      <Router>
+    <Router>
+      <ChatProvider>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/chat/:chatId" element={<Home />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
-      </Router>
-    </ToggleMenuProvider>
+      </ChatProvider>
+    </Router>
   );
-}
+};
 
 export default App;
