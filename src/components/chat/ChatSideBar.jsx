@@ -1,16 +1,17 @@
-import { useState } from 'react'
-import React from 'react'
-import { useNavigate } from 'react-router-dom'
-import plus from '../assets/plus.svg'
-import clock from '../assets/clock.svg'
-import star from '../assets/star.svg' 
-import axios from 'axios'
-import { useToggleMenu } from '../Context/context'
+// src/components/chat/ChatSideBar.jsx
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import plus from '../assets/plus.svg';
+// Import placeholder SVGs or create them if missing
+import clock from '../assets/clock.svg'; // You'll need to create this file
+import star from '../assets/star.svg';   // You'll need to create this file
+import axios from 'axios';
+import { useChatContext } from '../../context/chatContext';
 
 const API_URL = 'http://localhost:5000/api';
 
 const ChatSideBar = ({ createNewChat, isMobileSidebarOpen }) => {
-  const { chats, setChats } = useToggleMenu();
+  const { chats, setChats } = useChatContext();
   const navigate = useNavigate();
   
   const deleteChat = async (chatId, e) => {
@@ -40,33 +41,40 @@ const ChatSideBar = ({ createNewChat, isMobileSidebarOpen }) => {
   };
  
   return (
-    <div className="wrapper h-[100vh]  absolute w-[70vw] md:w-[24vw]" style={{
-      left: isMobileSidebarOpen ? '-700px' : '0px',
-      transition: 'left 0.3s ease',
-      zIndex: 55
-    }}>
+    <div 
+      className="wrapper h-[100vh] absolute w-[70vw] md:w-[24vw]" 
+      style={{
+        left: isMobileSidebarOpen ? '0px' : '-700px',
+        transition: 'left 0.3s ease',
+        zIndex: 55
+      }}
+    >
       <div className="rightMenu h-full w-full bg-white shadow-lg relative">
-        <div className="absolute top-0 right-[-5px] h-full w-1 bg-white" style={{
-          boxShadow: "2px 0px 8px 0px rgba(0,0,0,0.3)",
-          zIndex: 10
-        }}></div>
+        <div 
+          className="absolute top-0 right-[-5px] h-full w-1 bg-white" 
+          style={{
+            boxShadow: "2px 0px 8px 0px rgba(0,0,0,0.3)",
+            zIndex: 10
+          }}
+        ></div>
         <div className="py-10 innerWrapepr overflow-y-scroll flex flex-col items-center gap-10 justify-between h-full bg-gradient-to-b from-gray-100 to-gray-200">
           <div className="iconContainer relative">
-            <div className="activeTab h-7 w-1 bg-blue-600 rounded-3xl absolute left-[-12px] transition-all duration-300 ease-in-out" style={{
-              top: `4px`
-            }}></div>
+            <div 
+              className="activeTab h-7 w-1 bg-blue-600 rounded-3xl absolute left-[-12px] transition-all duration-300 ease-in-out" 
+              style={{ top: `4px` }}
+            ></div>
             <ul className='flex gap-5'>
               <li 
                 onClick={() => createNewChat()} 
                 className='cursor-pointer hover:scale-110 transition-transform duration-200 p-2 rounded-full hover:bg-blue-100'
               >
-                <img src={plus} alt="" srcSet="" className="w-6 h-6" />
+                <img src={plus} alt="New Chat" className="w-6 h-6" />
               </li>
               <li className='cursor-pointer hover:scale-110 transition-transform duration-200 p-2 rounded-full hover:bg-blue-100'>
-                <img src={clock} alt="" srcSet="" className="w-6 h-6" />
+                <img src={clock} alt="History" className="w-6 h-6" />
               </li>
               <li className='cursor-pointer hover:scale-110 transition-transform duration-200 p-2 rounded-full hover:bg-blue-100'>
-                <img src={star} alt="" srcSet="" className="w-6 h-6" />
+                <img src={star} alt="Favorites" className="w-6 h-6" />
               </li>
             </ul>
           </div>
@@ -99,12 +107,12 @@ const ChatSideBar = ({ createNewChat, isMobileSidebarOpen }) => {
             </ul>
           </div>
           <div className="bottomMenu">
-        
+            {/* Bottom menu content goes here */}
           </div>
         </div>
       </div>
     </div>
   );
-}
+};
 
-export default ChatSideBar
+export default ChatSideBar;
